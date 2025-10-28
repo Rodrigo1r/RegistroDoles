@@ -1,0 +1,142 @@
+### Archivo de pruebas de API para Registro Doles
+### Usar con extensiones REST Client en VS Code o IntelliJ
+
+@baseUrl = http://localhost:8080/api
+
+### 1. Listar todas las empresas
+GET {{baseUrl}}/catalogos/empresas
+
+### 2. Listar todas las clases
+GET {{baseUrl}}/catalogos/clases
+
+### 3. Listar todos los N2
+GET {{baseUrl}}/catalogos/n2
+
+### 4. Listar todos los N3
+GET {{baseUrl}}/catalogos/n3
+
+### 5. Listar todas las personas
+GET {{baseUrl}}/catalogos/personas
+
+### 6. Listar todas las preguntas
+GET {{baseUrl}}/catalogos/preguntas
+
+### 7. Crear una empresa
+POST {{baseUrl}}/catalogos/empresas
+Content-Type: application/json
+
+{
+  "nombre": "NIRSA",
+  "descripcion": "Negocios Industriales Real S.A.",
+  "activo": true
+}
+
+### 8. Crear una persona
+POST {{baseUrl}}/catalogos/personas
+Content-Type: application/json
+
+{
+  "nombre": "Coralia Rossana",
+  "apellido": "Varas Fuentes",
+  "cargo": "Auditor",
+  "email": "coralia.varas@nirsa.com",
+  "activo": true
+}
+
+### 9. Crear una persona evaluada
+POST {{baseUrl}}/catalogos/personas
+Content-Type: application/json
+
+{
+  "nombre": "Katty Jazmin",
+  "apellido": "Benavides Bazan",
+  "cargo": "Supervisor",
+  "email": "katty.benavides@nirsa.com",
+  "activo": true
+}
+
+### 10. Crear un registro Dole
+POST {{baseUrl}}/registros
+Content-Type: application/json
+
+{
+  "empresaId": 1,
+  "claseId": 1,
+  "n2Id": 1,
+  "n3Id": 1,
+  "personaEvaluadaId": 2,
+  "creadoPorId": 1,
+  "observaciones": "Auditoría mensual de 5S",
+  "respuestas": [
+    {
+      "preguntaId": 1,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 2,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 3,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 4,
+      "respuesta": false
+    },
+    {
+      "preguntaId": 5,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 6,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 7,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 8,
+      "respuesta": false
+    },
+    {
+      "preguntaId": 9,
+      "respuesta": true
+    },
+    {
+      "preguntaId": 10,
+      "respuesta": true
+    }
+  ]
+}
+
+### 11. Listar todos los registros
+GET {{baseUrl}}/registros
+
+### 12. Listar registros con filtros de fecha
+GET {{baseUrl}}/registros?fechaInicio=2025-10-01&fechaFin=2025-10-31
+
+### 13. Listar registros filtrados por N2
+GET {{baseUrl}}/registros?n2Id=1
+
+### 14. Listar registros filtrados por N3
+GET {{baseUrl}}/registros?n3Id=1
+
+### 15. Obtener detalle de un registro específico
+GET {{baseUrl}}/registros/1
+
+### 16. Subir evidencia para una pregunta (multipart/form-data)
+# Nota: Cambia la ruta del archivo según tu sistema
+POST {{baseUrl}}/registros/1/preguntas/1/evidencias
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="evidencia.jpg"
+Content-Type: image/jpeg
+
+< ./ruta/a/tu/imagen.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 17. Descargar archivo de evidencia
+GET http://localhost:8080/api/files/1/nombre-archivo.jpg

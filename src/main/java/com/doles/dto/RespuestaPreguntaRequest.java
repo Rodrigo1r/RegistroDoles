@@ -1,0 +1,18 @@
+package com.doles.dto;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RespuestaPreguntaRequest {
+
+    @NotNull(message = "El ID de la pregunta es obligatorio")
+    private Long preguntaId;
+
+    @NotNull(message = "La respuesta es obligatoria")
+    private Boolean respuesta;
+}
