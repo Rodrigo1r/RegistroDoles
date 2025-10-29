@@ -85,6 +85,7 @@ public class SecurityConfig {
             "http://localhost:3000",      // Desarrollo frontend
             "http://localhost:8080",      // Producción/Docker (mismo origen)
             "http://localhost:5173"       // Vite dev server
+			"https://frontend-five-beta-83.vercel.app"       // Permitir llamadas desde vercel
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
