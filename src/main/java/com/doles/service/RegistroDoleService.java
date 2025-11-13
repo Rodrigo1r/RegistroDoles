@@ -220,4 +220,38 @@ public class RegistroDoleService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public List<EstadisticaPorN3Response> obtenerEstadisticasPorN3() {
+        List<RegistroDole> todosLosRegistros = registroDoleRepository.findAll();
+
+        // Agrupar por N3
+        Map<String, List<RegistroDole>> registrosPorN3 = todosLosRegistros.stream()
+                .collect(Collectors.groupingBy(r -> r.getN3().getNombre()));
+
+        // Calcular estadísticas por N3
+        return registrosPorN3.entrySet().stream()
+                .map(entry -> {
+                    String nombreN3 = entry.getKey();
+                    List<RegistroDole> registros = entry.getValue();
+
+                    long cantidadRegistros = registros.size();
+                    double puntajePromedio = registros.stream()
+                            .mapToInt(RegistroDole::getPuntaje)
+                            .average()
+                            .orElse(0.0);
+
+                    // Obtener el nombre de la clase del primer registro (todos tienen la misma)
+                    String nombreClase = registros.isEmpty() ? "" : registros.get(0).getN3().getClase().getNombre();
+
+                    return EstadisticaPorN3Response.builder()
+                            .nombreN3(nombreN3)
+                            .nombreClase(nombreClase)
+                            .cantidadRegistros(cantidadRegistros)
+                            .puntajePromedio(Math.round(puntajePromedio * 100.0) / 100.0)
+                            .porcentajeCumplimiento(Math.round(puntajePromedio * 100.0) / 100.0)
+                            .build();
+                })
+                .collect(Collectors.toList());
+    }
 }

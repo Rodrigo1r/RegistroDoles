@@ -59,4 +59,10 @@ public class RegistroDoleController {
         List<com.doles.dto.EstadisticaPorAreaResponse> estadisticas = registroDoleService.obtenerEstadisticasPorArea();
         return ResponseEntity.ok(estadisticas);
     }
+
+    @GetMapping("/estadisticas/por-n3")
+    public ResponseEntity<List<com.doles.dto.EstadisticaPorN3Response>> obtenerEstadisticasPorN3() {
+        List<com.doles.dto.EstadisticaPorN3Response> estadisticas = registroDoleService.obtenerEstadisticasPorN3();
+        return ResponseEntity.ok(estadisticas);
+    }
 }
