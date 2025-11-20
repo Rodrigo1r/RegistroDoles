@@ -44,9 +44,9 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/health").permitAll()  // Healthcheck
                         .requestMatchers("/actuator/info").permitAll()  // Info
                         .requestMatchers("/", "/index.html", "/assets/**", "/*.js", "/*.css", "/*.ico", "/*.png", "/*.svg").permitAll()  // Frontend estático
-                        // Catálogos - lectura pública, modificación solo admin
+                        // Catálogos - lectura pública, modificación SUPERVISOR y ADMIN
                         .requestMatchers("GET", "/api/catalogos/**").permitAll()
-                        .requestMatchers("/api/catalogos/**").hasRole("ADMIN")
+                        .requestMatchers("/api/catalogos/**").hasAnyRole("SUPERVISOR", "ADMIN")
                         // Resto requiere autenticación
                         .anyRequest().authenticated()
                 )
@@ -85,7 +85,8 @@ public class SecurityConfig {
             "http://localhost:3000",      // Desarrollo frontend
             "http://localhost:8080",      // Producción/Docker (mismo origen)
             "http://localhost:5173",      // Vite dev server
-			"https://frontend-five-beta-83.vercel.app"       // Permitir llamadas desde vercel
+            "https://frontend-five-beta-83.vercel.app",       // Vercel (URL antigua)
+            "https://frontend-fujfyijbi-rodrigos-projects-25251382.vercel.app"  // Vercel (URL actual)
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
