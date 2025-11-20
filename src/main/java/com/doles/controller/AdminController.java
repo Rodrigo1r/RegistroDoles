@@ -1,11 +1,14 @@
 package com.doles.controller;
 
+import com.doles.dto.ActualizarPerfilRequest;
 import com.doles.entity.Role;
 import com.doles.entity.Usuario;
 import com.doles.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +22,7 @@ import java.util.Map;
 public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/usuarios")
     public ResponseEntity<List<Usuario>> getAllUsuarios() {
@@ -46,6 +50,35 @@ public class AdminController {
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setActivo(!usuario.getActivo());
+
+        return ResponseEntity.ok(usuarioRepository.save(usuario));
+    }
+
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<Usuario> actualizarUsuario(
+            @PathVariable Long id,
+            @Valid @RequestBody ActualizarPerfilRequest request) {
+
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Validar que el email no esté en uso por otro usuario
+        if (!usuario.getEmail().equals(request.getEmail())) {
+            usuarioRepository.findByEmail(request.getEmail())
+                    .ifPresent(u -> {
+                        throw new RuntimeException("El email ya está en uso");
+                    });
+        }
+
+        usuario.setNombre(request.getNombre());
+        usuario.setApellido(request.getApellido());
+        usuario.setEmail(request.getEmail());
+        usuario.setCargo(request.getCargo());
+
+        // Si se proporciona nueva contraseña, actualizarla
+        if (request.getNuevaPassword() != null && !request.getNuevaPassword().isEmpty()) {
+            usuario.setPassword(passwordEncoder.encode(request.getNuevaPassword()));
+        }
 
         return ResponseEntity.ok(usuarioRepository.save(usuario));
     }
